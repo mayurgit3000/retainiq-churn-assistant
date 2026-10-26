@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetainIQ — Retention Intelligence</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080C18;--bg2:#0C1222;--bg3:#0F1830;
+  --border:rgba(99,179,237,0.12);--border2:rgba(99,179,237,0.22);
+  --blue:#3B82F6;--blue2:#63B3ED;--purple:#8B5CF6;
+  --text:#E2E8F0;--text2:#94A3B8;--text3:#475569;--text4:#334155;
+  --green:#34D399;--amber:#F59E0B;--red:#F87171;
+}
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+.app{display:flex;height:100vh}
+.sidebar{width:260px;min-width:260px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Sidebar */
+.sb-header{padding:1.2rem 1rem 1rem;border-bottom:1px solid var(--border)}
+.sb-brand{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.9rem}
+.sb-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.sb-name{font-size:0.9rem;font-weight:800;background:linear-gradient(135deg,var(--blue2),#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sb-sub{font-size:0.62rem;color:var(--text3)}
+.session-badge{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text4);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:5px;padding:3px 7px;display:inline-block}
+.sb-section{font-size:0.6rem;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:0.8px;padding:0.8rem 1rem 0.35rem}
+.doc-tags{padding:0 1rem 0.5rem;display:flex;flex-wrap:wrap;gap:4px}
+.doc-tag{background:rgba(99,179,237,0.07);border:1px solid rgba(99,179,237,0.15);border-radius:5px;padding:2px 7px;font-size:0.65rem;color:var(--blue2);font-weight:500}
+.sb-divider{height:1px;background:var(--border);margin:0.2rem 0}
+.sb-questions{flex:1;overflow-y:auto;padding:0.3rem 0.6rem}
+.sb-questions::-webkit-scrollbar{width:3px}
+.sb-questions::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.q-btn{width:100%;text-align:left;background:rgba(99,179,237,0.04);border:1px solid rgba(99,179,237,0.1);border-radius:7px;padding:0.4rem 0.7rem;font-size:0.72rem;color:var(--text2);cursor:pointer;margin-bottom:3px;transition:all 0.15s;font-family:inherit;line-height:1.4}
+.q-btn:hover{background:rgba(99,179,237,0.1);border-color:rgba(99,179,237,0.28);color:var(--blue2);transform:translateX(2px)}
+.sb-footer{padding:0.8rem 1rem;border-top:1px solid var(--border)}
+.sb-footer-card{background:rgba(99,179,237,0.04);border:1px solid rgba(99,179,237,0.08);border-radius:8px;padding:0.6rem 0.8rem;font-size:0.65rem;color:var(--text4);line-height:1.7}
+.online-dot{display:inline-block;width:5px;height:5px;background:var(--green);border-radius:50%;margin-right:4px;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+.sb-actions{padding:0.5rem 0.6rem;display:flex;gap:6px}
+.sb-btn{flex:1;padding:0.4rem;font-size:0.7rem;border-radius:7px;border:1px solid rgba(99,179,237,0.15);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.15s;font-family:inherit}
+.sb-btn:hover{background:rgba(99,179,237,0.08);color:var(--blue2)}
+.sb-btn-export{background:rgba(52,211,153,0.06);border-color:rgba(52,211,153,0.2);color:var(--green)}
+.sb-btn-export:hover{background:rgba(52,211,153,0.12)}
+
+/* Top nav */
+.topnav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.nav-brand{display:flex;align-items:center;gap:0.8rem}
+.nav-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0}
+.nav-title{font-size:0.95rem;font-weight:800;background:linear-gradient(135deg,var(--blue2),#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-sub{font-size:0.62rem;color:var(--text3)}
+.nav-pills{display:flex;gap:6px;align-items:center}
+.pill{background:rgba(99,179,237,0.07);border:1px solid rgba(99,179,237,0.18);border-radius:20px;padding:2px 9px;font-size:0.63rem;color:var(--blue2);font-weight:600;letter-spacing:0.3px}
+.pill-live{background:rgba(52,211,153,0.07);border-color:rgba(52,211,153,0.2);color:var(--green);display:flex;align-items:center;gap:3px}
+.pill-session{font-family:'DM Mono',monospace;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);color:var(--text4)}
+.msg-counter{background:rgba(99,179,237,0.1);border:1px solid rgba(99,179,237,0.2);border-radius:20px;padding:2px 9px;font-size:0.63rem;color:var(--blue2);font-weight:600}
+
+/* Theme toggle */
+.theme-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;font-size:0.7rem;color:var(--text3);font-family:inherit;transition:all 0.15s}
+.theme-btn:hover{border-color:var(--border2);color:var(--text2)}
+
+/* Light mode */
+body.light{--bg:#F0F4FA;--bg2:#FFFFFF;--bg3:#E8EDF5;--border:rgba(59,130,246,0.15);--border2:rgba(59,130,246,0.3);--text:#1E293B;--text2:#475569;--text3:#94A3B8;--text4:#CBD5E1;--blue2:#2563EB}
+
+/* Pipeline */
+.pipeline{background:var(--bg3);border-bottom:1px solid rgba(99,179,237,0.08);padding:0.6rem 1.5rem;display:flex;align-items:center;overflow-x:auto;flex-shrink:0}
+.pipeline::-webkit-scrollbar{height:0}
+.pipe-step{display:flex;align-items:center;gap:0.5rem;background:rgba(99,179,237,0.05);border:1px solid rgba(99,179,237,0.12);border-radius:8px;padding:0.4rem 0.8rem;flex-shrink:0;transition:all 0.3s}
+.pipe-step.active{background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3)}
+.pipe-step.processing{background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.5);animation:pulse-pipe 1s infinite}
+@keyframes pulse-pipe{0%,100%{opacity:1}50%{opacity:0.6}}
+.pipe-icon{font-size:0.9rem}
+.pipe-label{font-size:0.68rem;font-weight:700;color:var(--text2)}
+.pipe-step.active .pipe-label,.pipe-step.processing .pipe-label{color:var(--blue2)}
+.pipe-sub{font-size:0.58rem;color:var(--text4)}
+.pipe-arrow{color:#1E3A5F;font-size:0.9rem;margin:0 0.4rem;flex-shrink:0;font-weight:700}
+
+/* Metrics */
+.metrics{background:var(--bg2);border-bottom:1px solid rgba(99,179,237,0.07);padding:0.45rem 1.5rem;display:flex;gap:1.5rem;align-items:center;overflow-x:auto;flex-shrink:0}
+.metrics::-webkit-scrollbar{height:0}
+.m-item{display:flex;align-items:baseline;gap:0.3rem;flex-shrink:0}
+.m-val{font-size:0.82rem;font-weight:700;color:var(--blue2);font-family:'DM Mono',monospace}
+.m-lbl{font-size:0.58rem;color:var(--text4);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;white-space:nowrap}
+.m-sep{width:1px;height:14px;background:rgba(99,179,237,0.08);flex-shrink:0}
+
+/* Chat */
+.chat-area{flex:1;overflow-y:auto;padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:0}
+.chat-area::-webkit-scrollbar{width:4px}
+.chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Welcome */
+.welcome{background:linear-gradient(135deg,#0C1527,#0F1E38);border:1px solid rgba(99,179,237,0.15);border-radius:16px;padding:2rem;text-align:center;max-width:620px;margin:1rem auto}
+.w-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 1rem}
+.w-title{font-size:1.25rem;font-weight:800;background:linear-gradient(135deg,var(--text),var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.4rem}
+.w-desc{font-size:0.82rem;color:var(--text3);line-height:1.7;margin-bottom:1.3rem}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;text-align:left}
+.topic-card{background:rgba(99,179,237,0.04);border:1px solid rgba(99,179,237,0.1);border-radius:9px;padding:0.6rem 0.8rem}
+.t-icon{font-size:0.9rem;margin-bottom:0.2rem}
+.t-title{font-weight:700;color:var(--text2);font-size:0.74rem;margin-bottom:0.1rem}
+.t-desc{color:var(--text4);font-size:0.66rem;line-height:1.4}
+
+/* Messages */
+.msg-wrap{margin-bottom:0.8rem}
+.msg-meta{font-size:0.58rem;color:var(--text4);font-family:'DM Mono',monospace;margin-bottom:0.18rem}
+.msg-meta.right{text-align:right}
+.msg-row{display:flex;gap:0.6rem;align-items:flex-start}
+.msg-row.user{justify-content:flex-end}
+.avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0}
+.avatar-bot{background:linear-gradient(135deg,var(--blue),var(--purple))}
+.avatar-user{background:#334155}
+.bubble{padding:0.65rem 0.95rem;border-radius:14px;max-width:75%;font-size:0.84rem;line-height:1.6}
+.bubble-user{background:var(--blue);color:white;border-radius:14px 14px 3px 14px}
+.bubble-bot{background:var(--bg2);border:1px solid var(--border);border-radius:14px 14px 14px 3px;color:var(--text)}
+.bubble-bot p{margin-bottom:0.5rem}
+.bubble-bot p:last-child{margin-bottom:0}
+.bubble-bot ul,.bubble-bot ol{margin:0.3rem 0 0.4rem 1.1rem}
+.bubble-bot li{margin-bottom:0.2rem}
+.bubble-bot strong{color:var(--blue2);font-weight:600}
+
+/* Typewriter cursor */
+.cursor{display:inline-block;width:2px;height:14px;background:var(--blue2);margin-left:2px;animation:cur 0.7s infinite;vertical-align:middle}
+@keyframes cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Sources — always visible */
+.sources{margin-top:0.5rem;margin-left:34px}
+.sources-label{font-size:0.58rem;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem}
+.src-card{background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.13);border-left:3px solid var(--blue);border-radius:0 7px 7px 0;padding:0.45rem 0.7rem;margin-bottom:0.25rem}
+.src-name{font-weight:700;color:var(--blue2);font-size:0.68rem;margin-bottom:0.15rem}
+.src-excerpt{color:var(--text4);font-style:italic;font-size:0.64rem;line-height:1.4}
+
+/* Follow-up questions */
+.followups{margin-top:0.5rem;margin-left:34px}
+.followups-label{font-size:0.58rem;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem}
+.followup-chips{display:flex;flex-wrap:wrap;gap:0.4rem}
+.followup-chip{background:rgba(99,179,237,0.06);border:1px solid rgba(99,179,237,0.2);border-radius:20px;padding:4px 10px;font-size:0.7rem;color:var(--blue2);cursor:pointer;transition:all 0.15s;font-family:inherit}
+.followup-chip:hover{background:rgba(99,179,237,0.14);border-color:rgba(99,179,237,0.4)}
+
+/* Risk score interpreter */
+.risk-panel{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem;margin-top:0.5rem;margin-left:34px}
+.risk-panel-title{font-size:0.68rem;font-weight:700;color:var(--blue2);margin-bottom:0.5rem}
+.risk-result{font-size:0.78rem;color:var(--text);line-height:1.6}
+.risk-tier-1{color:#F87171;font-weight:700}
+.risk-tier-2{color:#F59E0B;font-weight:700}
+.risk-tier-3{color:#34D399;font-weight:700}
+.risk-tier-4{color:var(--text2);font-weight:700}
+
+/* Message actions */
+.msg-actions{display:flex;align-items:center;gap:0.4rem;margin-top:0.35rem;margin-left:34px;flex-wrap:wrap}
+.fb-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-size:0.65rem;cursor:pointer;color:var(--text4);transition:all 0.15s;font-family:inherit}
+.fb-btn:hover{border-color:var(--border2);color:var(--text2)}
+.fb-btn.active-up{border-color:rgba(52,211,153,0.3);color:var(--green);background:rgba(52,211,153,0.06)}
+.fb-btn.active-dn{border-color:rgba(245,158,11,0.3);color:var(--amber);background:rgba(245,158,11,0.06)}
+.copy-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-size:0.65rem;cursor:pointer;color:var(--text4);transition:all 0.15s;font-family:inherit}
+.copy-btn:hover{border-color:var(--border2);color:var(--text2)}
+.latency{font-size:0.58rem;color:var(--green);font-family:'DM Mono',monospace}
+.oos-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.18);border-radius:5px;padding:2px 7px;font-size:0.63rem;color:var(--amber)}
+
+/* Typing indicator */
+.typing{display:flex;gap:4px;align-items:center;padding:0.6rem 0.95rem;background:var(--bg2);border:1px solid var(--border);border-radius:14px 14px 14px 3px;width:fit-content}
+.typing span{width:6px;height:6px;background:var(--text3);border-radius:50%;animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* Risk interpreter panel (top area) */
+.risk-interpreter{background:var(--bg2);border-bottom:1px solid var(--border);padding:0.5rem 1.5rem;display:flex;align-items:center;gap:0.8rem;flex-shrink:0}
+.ri-label{font-size:0.62rem;color:var(--text4);font-weight:600;white-space:nowrap}
+.ri-input{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:0.28rem 0.7rem;font-size:0.75rem;color:var(--text);font-family:'DM Mono',monospace;width:90px;outline:none}
+.ri-input:focus{border-color:rgba(99,179,237,0.3)}
+.ri-btn{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);border-radius:7px;padding:0.28rem 0.7rem;font-size:0.7rem;color:var(--blue2);cursor:pointer;font-family:inherit;transition:all 0.15s;white-space:nowrap}
+.ri-btn:hover{background:rgba(59,130,246,0.18)}
+.ri-result{font-size:0.72rem;color:var(--text2);flex:1}
+.ri-badge{display:inline-block;border-radius:5px;padding:2px 8px;font-size:0.65rem;font-weight:700;margin-right:6px}
+.ri-critical{background:rgba(248,113,113,0.12);color:#F87171;border:1px solid rgba(248,113,113,0.25)}
+.ri-high{background:rgba(245,158,11,0.12);color:#F59E0B;border:1px solid rgba(245,158,11,0.25)}
+.ri-moderate{background:rgba(99,179,237,0.12);color:var(--blue2);border:1px solid rgba(99,179,237,0.25)}
+.ri-low{background:rgba(52,211,153,0.12);color:var(--green);border:1px solid rgba(52,211,153,0.25)}
+
+/* Input area */
+.input-area{border-top:1px solid var(--border);background:var(--bg2);padding:0.9rem 1.5rem;flex-shrink:0}
+.input-row{display:flex;gap:0.6rem;align-items:flex-end}
+.cid-wrap{margin-bottom:0.5rem;display:flex;align-items:center;gap:0.8rem}
+.cid-label{font-size:0.6rem;color:var(--text4);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+.cid-input{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:0.3rem 0.7rem;font-size:0.72rem;color:var(--text2);font-family:inherit;width:160px;outline:none}
+.cid-input:focus{border-color:rgba(99,179,237,0.3)}
+.msg-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:0.7rem 1rem;font-size:0.84rem;color:var(--text);font-family:inherit;outline:none;resize:none;max-height:120px;transition:border-color 0.2s;line-height:1.5}
+.msg-input:focus{border-color:rgba(99,179,237,0.3);box-shadow:0 0 0 3px rgba(59,130,246,0.08)}
+.msg-input::placeholder{color:var(--text4)}
+.send-btn{width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--purple));border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-size:1rem}
+.send-btn:hover{transform:scale(1.05)}
+.send-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.key-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3px 9px;font-size:0.66rem;color:var(--text);font-family:'DM Mono',monospace;width:170px;outline:none}
+.key-input:focus{border-color:var(--border2)}
+.pill-live.demo{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.25);color:var(--amber)}
+.pill-live.demo .online-dot{background:var(--amber);animation:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-header">
+      <div class="sb-brand">
+        <div class="sb-icon">🧠</div>
+        <div><div class="sb-name">RetainIQ</div><div class="sb-sub">Retention Intelligence Platform</div></div>
+      </div>
+      <div class="session-badge" id="session-badge">RIQ-LOADING</div>
+    </div>
+    <div class="sb-section">Knowledge Base</div>
+    <div class="doc-tags">
+      <span class="doc-tag">📊 EDA Findings</span>
+      <span class="doc-tag">🔍 SHAP Analysis</span>
+      <span class="doc-tag">📋 Retention Playbook</span>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">Ask RetainIQ</div>
+    <div class="sb-questions" id="sb-questions"></div>
+    <div class="sb-actions">
+      <button class="sb-btn" onclick="clearChat()">🗑 Clear</button>
+      <button class="sb-btn sb-btn-export" onclick="exportChat()">⬇ Export</button>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-footer-card">
+        <div>ChurnSense · keyword retrieval · Claude 3 Haiku</div>
+        <div>BARBM222 · EU Business School</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Top nav -->
+    <div class="topnav">
+      <div class="nav-brand">
+        <div class="nav-icon">🧠</div>
+        <div><div class="nav-title">RetainIQ Assistant</div><div class="nav-sub">Powered by ChurnSense · RAG Intelligence Layer</div></div>
+      </div>
+      <div class="nav-pills">
+        <span class="pill">RAG</span>
+        <span class="pill">SHAP-Aware</span>
+        <span class="msg-counter" id="msg-counter">0 messages</span>
+        <span class="pill pill-session" id="nav-session">RIQ-...</span>
+        <input type="password" id="api-key" class="key-input" placeholder="OpenRouter key (optional)" autocomplete="off" title="Kept in this tab only. Without a key, answers show the retrieved passages."/>
+        <span class="pill pill-live" id="mode-pill"><span class="online-dot"></span><span id="mode-text">Demo mode</span></span>
+        <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀ Light</button>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="pipeline" id="pipeline">
+      <div class="pipe-step" id="pipe-0"><span class="pipe-icon">📥</span><div><div class="pipe-label">Customer Data</div><div class="pipe-sub">50K records · 22 features</div></div></div>
+      <span class="pipe-arrow">→</span>
+      <div class="pipe-step" id="pipe-1"><span class="pipe-icon">🤖</span><div><div class="pipe-label">ChurnSense</div><div class="pipe-sub">Logistic Regression · AUC 0.90</div></div></div>
+      <span class="pipe-arrow">→</span>
+      <div class="pipe-step" id="pipe-2"><span class="pipe-icon">🔍</span><div><div class="pipe-label">SHAP Explainer</div><div class="pipe-sub">Feature-level explanations</div></div></div>
+      <span class="pipe-arrow">→</span>
+      <div class="pipe-step active" id="pipe-3"><span class="pipe-icon">🧠</span><div><div class="pipe-label">RetainIQ RAG</div><div class="pipe-sub">You are here</div></div></div>
+      <span class="pipe-arrow">→</span>
+      <div class="pipe-step" id="pipe-4"><span class="pipe-icon">🎯</span><div><div class="pipe-label">Retention Action</div><div class="pipe-sub">Agent · Email · Offer</div></div></div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics">
+      <div class="m-item"><span class="m-val">3</span><span class="m-lbl">Source Docs</span></div>
+      <div class="m-sep"></div>
+      <div class="m-item"><span class="m-val">0.900</span><span class="m-lbl">AUC-ROC</span></div>
+      <div class="m-sep"></div>
+      <div class="m-item"><span class="m-val">94%</span><span class="m-lbl">Recall</span></div>
+      <div class="m-sep"></div>
+      <div class="m-item"><span class="m-val">€1.28M</span><span class="m-lbl">Revenue Protected</span></div>
+      <div class="m-sep"></div>
+      <div class="m-item"><span class="m-val">&lt;4 days</span><span class="m-lbl">Payback Period</span></div>
+      <div class="m-sep"></div>
+      <div class="m-item"><span class="m-val" id="m-topk">Top-5</span><span class="m-lbl">Passages Retrieved</span></div>
+      <div class="m-sep"></div>
+      <div class="m-item"><span class="m-val" id="m-chunks">–</span><span class="m-lbl">KB Passages</span></div>
+    </div>
+
+    <!-- Risk Interpreter -->
+    <div class="risk-interpreter">
+      <span class="ri-label">🎯 Risk Score Interpreter:</span>
+      <input class="ri-input" id="ri-input" type="number" min="0" max="1" step="0.01" placeholder="e.g. 0.87" />
+      <button class="ri-btn" onclick="interpretRisk()">Interpret →</button>
+      <div class="ri-result" id="ri-result">Enter a ChurnSense probability score (0–1) to get the risk tier, recommended action, and intervention script.</div>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-area" id="chat-area">
+      <div class="welcome" id="welcome">
+        <div class="w-icon">🧠</div>
+        <div class="w-title">RetainIQ Assistant</div>
+        <div class="w-desc">Your AI intelligence layer built on ChurnSense.<br>Ask about churn drivers, SHAP explanations, customer risk profiles, and retention strategies — all grounded in your model's own findings.</div>
+        <div class="topic-grid">
+          <div class="topic-card"><div class="t-icon">📊</div><div class="t-title">EDA & Cohort Analysis</div><div class="t-desc">Churn rates by segment, tenure cohorts</div></div>
+          <div class="topic-card"><div class="t-icon">🔍</div><div class="t-title">SHAP Explainability</div><div class="t-desc">Feature importance, prediction explanations</div></div>
+          <div class="topic-card"><div class="t-icon">🎯</div><div class="t-title">Retention Playbook</div><div class="t-desc">Risk-tiered actions, scripts, offers</div></div>
+          <div class="topic-card"><div class="t-icon">💰</div><div class="t-title">Business Impact</div><div class="t-desc">ROI, payback period, revenue protection</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <div class="cid-wrap">
+        <span class="cid-label">Customer ID:</span>
+        <input class="cid-input" id="cid-input" placeholder="e.g. CUST-4821" />
+      </div>
+      <div class="input-row">
+        <textarea class="msg-input" id="msg-input" rows="1" placeholder="Ask about churn drivers, SHAP values, risk profiles, or retention strategies..."></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const KB = `DOCUMENT 1: ChurnSense EDA & Cohort Analysis
+DATASET: 50,000 telecom customers, 22 features
+BUSINESS PROBLEM: Annual churn rate 26%, ~13,000 customers lost/year, average monthly spend €35, annual revenue at risk €5.46 million.
+KEY FINDINGS:
+1. CONTRACT TYPE IS #1 CHURN DRIVER: Month-to-Month customers churn at 45.2% vs 2.4% for annual contracts (19x difference). SHAP value 2.09 — highest of all features. All 3 models agree.
+2. EARLY TENURE IS HIGHEST RISK: 41% churn in first 6 months, drops to 15% at 6-12 months, 8% at 1-2 years, 5% at 2-5 years, 3% after 5 years.
+3. SUPPORT CALLS SIGNAL FRUSTRATION: 3+ support calls in 6 months = strong churn indicator.
+4. SPEND AND REGION NOT PREDICTIVE: Churn flat at ~26% across all spend tiers and regions.
+5. SATISFACTION SCORE WEAK SIGNAL: SHAP 0.41, likely data quality issues.
+COHORT: Under 6 months: 41% churn CRITICAL. 6-12 months: 15% HIGH. 1-2 years: 8% MODERATE. 2-5 years: 5% LOW. 5+ years: 3% VERY LOW.
+
+DOCUMENT 2: ChurnSense SHAP & Model Performance
+MODEL SELECTED: Logistic Regression — AUC 0.900, Recall 0.940, Precision 0.520, F1 0.670, Missed Churners: 235.
+XGBoost: AUC 0.892, Recall 0.852, Missed: 308. Random Forest: AUC 0.895, Recall 0.621, Missed: 788.
+WHY LOGISTIC REGRESSION: Highest recall 94%, fewest missed churners 235, fully interpretable, lower compute. Threshold tuned from 0.50 to 0.35.
+SHAP FEATURES: 1) Contract Type SHAP 2.09 — Month-to-Month massive risk. 2) Customer Tenure SHAP 0.99 — short tenure high risk. 3) Satisfaction Score SHAP 0.41. 4) Support Calls SHAP 0.33 — 3+ calls trigger. 5) Return Rate SHAP 0.18. 6) NPS Score SHAP 0.16. 7) Gender SHAP <0.01 removing. 8) Region SHAP <0.01 removing.
+EXAMPLE: 87% churn — Month-to-Month, 3 months tenure, 5 support calls, satisfaction 2.5/10. SHAP: contract +1.73, tenure +1.04, support +0.62, satisfaction +0.38.
+
+DOCUMENT 3: RetainIQ Retention Playbook
+BUSINESS IMPACT: 12,220 churners identified/year, 3,055 customers saved, €1.28M protected revenue, €13,000 deployment cost, payback <4 days, 3-year ROI ~2,850%.
+TIER 1 CRITICAL (score ≥0.70): Month-to-Month + tenure <6m + 3+ calls. Phone call within 48h. Annual contract offer with 2-month discount. 30-35% retention rate.
+TIER 2 HIGH (0.40-0.70): Month-to-Month OR short tenure. Email+app within 5 days. Loyalty reward or feature upgrade. 20-25% retention.
+TIER 3 MODERATE (0.20-0.40): Engagement campaign. Early renewal discount. 40-50% retention.
+TIER 4 LOW (<0.20): Standard upsell. Self-sustaining.
+TOP ACTIONS: 1) Convert Month-to-Month to Annual (19x churn reduction). 2) 90-day onboarding (addresses 41% early churn). 3) Escalate at 3rd support call. 4) Renewal campaign 60 days before expiry.
+PROFILES: Early Leaver: <6m tenure, MTM, 2+ calls, score 75-90%, Tier 1. Frustrated Long-Timer: 12-36m, MTM, 3+ calls, score 55-75%, Tier 2. Dissatisfied New Annual: <12m, Annual, low sat, score 40-60%, Tier 2. Stable Long-Timer: 3+ years, Annual, 0-1 calls, score <15%, Tier 4.
+ETHICS: GDPR Article 22 no adverse decisions without human review. EU AI Act limited-risk, SHAP transparency. Gender and region near-zero removing in v2.`;
+
+const SYSTEM = `You are the RetainIQ Assistant — an AI intelligence layer built on ChurnSense, a customer churn prediction model trained on 50,000 telecom customers. Help retention agents understand churn drivers, risk profiles, retention actions, model explanations, and business impact. Answer ONLY from the knowledge base. You will be given retrieved context passages. If the answer is not in them, say you don't have that information. Be direct, specific, and actionable. Use bullet points. Connect insights to business value. Never fabricate statistics or SHAP values.`;
+
+const FOLLOWUP_MAP = {
+  contract: ["What offer should I make to a Month-to-Month customer?","How much does annual conversion reduce churn?","What is the Tier 1 retention script?"],
+  tenure: ["What is the onboarding protocol for new customers?","Which tenure cohort is highest risk?","What actions for customers under 6 months?"],
+  shap: ["What does a SHAP value of 2.09 mean in practice?","Which features are being removed in model v2?","How does SHAP help retention agents?"],
+  churn: ["What is the ROI of deploying ChurnSense?","How many churners does the model catch per year?","What is the payback period?"],
+  support: ["What happens when a customer makes their 3rd support call?","How does support call rate affect churn probability?","What is the Tier 1 intervention protocol?"],
+  default: ["What is the #1 churn driver?","What actions for a high-risk customer?","What is the ROI of ChurnSense?"]
+};
+
+const QUESTIONS = [
+  "Why are customers in the first 6 months churning?",
+  "What is the #1 churn driver in the model?",
+  "What actions should I take for a high-risk customer?",
+  "How does contract type affect churn?",
+  "What does a SHAP value of 2.09 mean?",
+  "Which customer profile is highest risk?",
+  "What is the ROI of deploying ChurnSense?",
+  "Why is spend not predictive of churn?",
+  "What is the Tier 1 retention playbook?",
+  "How accurate is the ChurnSense model?",
+  "What is the payback period?",
+  "How many churners does the model catch per year?",
+];
+
+let messages = [], msgCount = 0, isLight = false;
+let sessionId = "RIQ-" + Math.random().toString(36).substr(2,8).toUpperCase();
+document.getElementById("session-badge").textContent = sessionId;
+document.getElementById("nav-session").textContent = sessionId;
+
+const sbQ = document.getElementById("sb-questions");
+QUESTIONS.forEach(q => {
+  const btn = document.createElement("button");
+  btn.className = "q-btn"; btn.textContent = q;
+  btn.onclick = () => { document.getElementById("msg-input").value = q; document.getElementById("msg-input").focus(); };
+  sbQ.appendChild(btn);
+});
+
+function toggleTheme() {
+  isLight = !isLight;
+  document.body.classList.toggle("light", isLight);
+  document.getElementById("theme-btn").textContent = isLight ? "🌙 Dark" : "☀ Light";
+}
+
+function getTime() { return new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}); }
+
+function escHtml(t) { return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function mdToHtml(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/^### (.+)$/gm,"<div style='font-size:0.8rem;font-weight:700;color:var(--blue2);margin:0.5rem 0 0.2rem'>$1</div>")
+    .replace(/^- (.+)$/gm,"<li>$1</li>")
+    .replace(/(<li>.*<\/li>\n?)+/g,m=>"<ul style='margin:0.3rem 0 0.4rem 1.1rem'>"+m+"</ul>")
+    .replace(/^\d+\. (.+)$/gm,"<li>$1</li>")
+    .replace(/\n\n/g,"</p><p>")
+    .replace(/\n/g,"<br>");
+}
+
+function getFollowups(text) {
+  const t = text.toLowerCase();
+  if(t.includes("contract")||t.includes("month-to-month")) return FOLLOWUP_MAP.contract;
+  if(t.includes("tenure")||t.includes("months")) return FOLLOWUP_MAP.tenure;
+  if(t.includes("shap")||t.includes("feature")) return FOLLOWUP_MAP.shap;
+  if(t.includes("roi")||t.includes("revenue")||t.includes("payback")) return FOLLOWUP_MAP.churn;
+  if(t.includes("support")||t.includes("call")) return FOLLOWUP_MAP.support;
+  return FOLLOWUP_MAP.default;
+}
+
+function interpretRisk() {
+  const val = parseFloat(document.getElementById("ri-input").value);
+  const res = document.getElementById("ri-result");
+  if(isNaN(val)||val<0||val>1) { res.innerHTML = "<span style='color:var(--amber)'>Please enter a value between 0 and 1</span>"; return; }
+  let badge, action, offer;
+  if(val>=0.70) {
+    badge = `<span class="ri-badge ri-critical">TIER 1 — CRITICAL (${(val*100).toFixed(0)}%)</span>`;
+    action = "Personal phone call within <strong>48 hours</strong> from senior retention agent.";
+    offer = "Annual contract upgrade with 2-month discount (~€70 value).";
+  } else if(val>=0.40) {
+    badge = `<span class="ri-badge ri-high">TIER 2 — HIGH RISK (${(val*100).toFixed(0)}%)</span>`;
+    action = "Targeted email + in-app notification within <strong>5 business days</strong>.";
+    offer = "Loyalty reward: 1 month at 50% price or feature upgrade.";
+  } else if(val>=0.20) {
+    badge = `<span class="ri-badge ri-moderate">TIER 3 — MODERATE (${(val*100).toFixed(0)}%)</span>`;
+    action = "Proactive engagement campaign via email/SMS.";
+    offer = "Early renewal discount or referral programme invitation.";
+  } else {
+    badge = `<span class="ri-badge ri-low">TIER 4 — LOW RISK (${(val*100).toFixed(0)}%)</span>`;
+    action = "Standard engagement and upsell opportunity.";
+    offer = "Loyalty recognition, referral bonus, premium tier offer.";
+  }
+  res.innerHTML = `${badge} ${action} <span style='color:var(--text4)'>Offer:</span> ${offer}`;
+}
+
+function animatePipeline(active) {
+  [0,1,2,3,4].forEach(i => {
+    const el = document.getElementById("pipe-"+i);
+    el.classList.remove("active","processing");
+    if(active && i < 4) el.classList.add("processing");
+    else if(!active && i===3) el.classList.add("active");
+  });
+}
+
+const TOP_K = 5;
+const DOC_LABELS = {1:"ChurnSense — EDA & Cohort Analysis", 2:"ChurnSense — SHAP & Model Performance", 3:"RetainIQ — Retention Playbook"};
+const STOP = new Set("the a an and or of to in on for is are was were be what which who how why does do did with by at from this that these those it its as can should i we you my our your about into than then there their they them".split(" "));
+function tokens(t){ return t.toLowerCase().replace(/[^a-z0-9.%€\- ]/g," ").split(/\s+/).filter(w=>w && !STOP.has(w)).map(w=>w.replace(/(ing|ers|er|ed|es|s)$/,"")).filter(w=>w.length>1); }
+const PASSAGES = (() => {
+  const out = [];
+  KB.split(/\n\n+/).forEach(block => {
+    const m = block.match(/^DOCUMENT (\d+):/); const doc = m ? +m[1] : 0;
+    block.split("\n").slice(1).forEach(line => { const t=line.trim(); if (t.length > 25) out.push({doc, text:t, toks:new Set(tokens(t))}); });
+  });
+  return out;
+})();
+function simpleRAG(query) {
+  const q = [...new Set(tokens(query))];
+  const scored = PASSAGES.map(p => ({p, score: q.filter(w => p.toks.has(w)).length}))
+    .filter(x => x.score > 0).sort((a,b) => b.score - a.score).slice(0, TOP_K);
+  const sources = [], seen = new Set();
+  scored.forEach(({p}) => {
+    const label = DOC_LABELS[p.doc];
+    if (!seen.has(label)) { seen.add(label); sources.push({label, excerpt: p.text.length > 180 ? p.text.slice(0,180)+"..." : p.text}); }
+  });
+  return {context: scored.map(x => `[${DOC_LABELS[x.p.doc]}] ${x.p.text}`).join("\n"), passages: scored.map(x=>x.p), sources, outOfScope: scored.length === 0};
+}
+
+function updateCounter() {
+  const n = messages.length;
+  document.getElementById("msg-counter").textContent = n + (n===1?" message":" messages");
+}
+
+async function typewriter(el, text, speed=12) {
+  el.innerHTML = "";
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+  el.appendChild(cursor);
+  const html = "<p>"+mdToHtml(escHtml(text))+"</p>";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  const plainText = tmp.textContent;
+  let i=0;
+  return new Promise(resolve=>{
+    const interval = setInterval(()=>{
+      if(i>=plainText.length){
+        clearInterval(interval);
+        el.innerHTML = html;
+        resolve();
+        return;
+      }
+      cursor.remove();
+      el.innerHTML = "<p>"+mdToHtml(escHtml(plainText.substring(0,i+1)))+"</p>";
+      const newCursor = document.createElement("span");
+      newCursor.className="cursor";
+      el.appendChild(newCursor);
+      i+=3;
+      document.getElementById("chat-area").scrollTop=document.getElementById("chat-area").scrollHeight;
+    }, speed);
+  });
+}
+
+function addUserMessage(text, cid) {
+  const welcome = document.getElementById("welcome");
+  if(welcome) welcome.remove();
+  const chat = document.getElementById("chat-area");
+  const ts = getTime();
+  const cidStr = cid ? ` · ${cid}` : "";
+  const id = "msg-"+(++msgCount);
+  const div = document.createElement("div");
+  div.className="msg-wrap"; div.id=id;
+  div.innerHTML=`<div class="msg-meta right">You · ${ts}${cidStr}</div><div class="msg-row user"><div class="bubble bubble-user">${escHtml(text)}</div><div class="avatar avatar-user">👤</div></div>`;
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+  messages.push({role:"user",content:text,ts});
+  updateCounter();
+}
+
+function addTypingIndicator() {
+  const chat=document.getElementById("chat-area");
+  const div=document.createElement("div");
+  div.className="msg-wrap"; div.id="typing-indicator";
+  div.innerHTML=`<div class="msg-meta">RetainIQ Assistant · thinking...</div><div class="msg-row"><div class="avatar avatar-bot">🧠</div><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function removeTypingIndicator() { const el=document.getElementById("typing-indicator"); if(el)el.remove(); }
+
+async function addBotMessage(text, latencyMs, sources, outOfScope, query) {
+  const chat=document.getElementById("chat-area");
+  const ts=getTime();
+  const id="msg-"+(++msgCount);
+  const srcHtml = sources&&sources.length ? `<div class="sources"><div class="sources-label">📎 ${sources.length} source(s) cited</div>${sources.map(s=>`<div class="src-card"><div class="src-name">📄 ${s.label}</div><div class="src-excerpt">${s.excerpt}</div></div>`).join("")}</div>` : "";
+  const oosHtml = outOfScope ? `<div style="margin:0.3rem 0 0 34px"><span class="oos-badge">⚠ Outside RetainIQ knowledge base</span></div>` : "";
+  const followups = getFollowups(query+" "+text);
+  const fuHtml = `<div class="followups"><div class="followups-label">💬 Follow-up questions</div><div class="followup-chips">${followups.map(q=>`<button class="followup-chip" onclick="prefillQ(this)">${q}</button>`).join("")}</div></div>`;
+  const div=document.createElement("div");
+  div.className="msg-wrap"; div.id=id;
+  div.innerHTML=`
+    <div class="msg-meta">RetainIQ Assistant · ${ts}</div>
+    <div class="msg-row">
+      <div class="avatar avatar-bot">🧠</div>
+      <div class="bubble bubble-bot" id="bubble-${id}"></div>
+    </div>
+    ${srcHtml}
+    ${oosHtml}
+    ${fuHtml}
+    <div class="msg-actions">
+      <button class="fb-btn" id="up-${id}" onclick="feedback('${id}','up')">👍 Helpful</button>
+      <button class="fb-btn" id="dn-${id}" onclick="feedback('${id}','dn')">👎 Not helpful</button>
+      <button class="copy-btn" onclick="copyMsg('${id}')">📋 Copy</button>
+      <span class="latency">⚡ ${(latencyMs/1000).toFixed(1)}s</span>
+    </div>`;
+  chat.appendChild(div);
+  await typewriter(document.getElementById("bubble-"+id), text);
+  chat.scrollTop=chat.scrollHeight;
+  messages.push({role:"assistant",content:text,ts,latency:latencyMs});
+  updateCounter();
+}
+
+function prefillQ(btn) {
+  document.getElementById("msg-input").value = btn.textContent;
+  document.getElementById("msg-input").focus();
+}
+
+function feedback(msgId, type) {
+  const up=document.getElementById("up-"+msgId), dn=document.getElementById("dn-"+msgId);
+  if(!up||!dn) return;
+  up.className="fb-btn"+(type==="up"?" active-up":"");
+  dn.className="fb-btn"+(type==="dn"?" active-dn":"");
+  up.disabled=true; dn.disabled=true;
+}
+
+function copyMsg(msgId) {
+  const el=document.getElementById("bubble-"+msgId);
+  if(el) { navigator.clipboard.writeText(el.textContent); const btn=el.closest(".msg-wrap").querySelector(".copy-btn"); if(btn){btn.textContent="✓ Copied";setTimeout(()=>btn.textContent="📋 Copy",2000);} }
+}
+
+async function sendMessage() {
+  const input=document.getElementById("msg-input");
+  const cid=document.getElementById("cid-input").value.trim();
+  const text=input.value.trim();
+  if(!text) return;
+  const btn=document.getElementById("send-btn");
+  btn.disabled=true; input.value=""; input.style.height="auto";
+  addUserMessage(text,cid);
+  addTypingIndicator();
+  animatePipeline(true);
+  const {context,passages,sources,outOfScope}=simpleRAG(text);
+  const t0=Date.now();
+  const apiKey=(document.getElementById("api-key").value||"").trim();
+  const cidCtx=cid?`\n\nAgent is asking about Customer ID: ${cid}`:"";
+  try {
+    let answer;
+    if(!apiKey){
+      await new Promise(r=>setTimeout(r,500));
+      answer = outOfScope
+        ? "**Demo mode** (no API key). I couldn't find anything in the knowledge base that matches this question."
+        : "**Demo mode** (no API key). These are the most relevant passages from the knowledge base. Add an OpenRouter key at the top to get a written answer.\n\n" + passages.map(p=>"- "+p.text).join("\n");
+    } else {
+      const userMsg = outOfScope
+        ? `No relevant passages were found.\n\nQuestion: ${text}${cidCtx}`
+        : `Context passages:\n${context}\n\nQuestion: ${text}${cidCtx}\n\nAnswer using only the context passages.`;
+      const res=await fetch("https://openrouter.ai/api/v1/chat/completions",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":`Bearer ${apiKey}`,"X-Title":"RetainIQ"},
+        body:JSON.stringify({model:"anthropic/claude-3-haiku",max_tokens:800,messages:[{role:"system",content:SYSTEM},{role:"user",content:userMsg}]})
+      });
+      const data=await res.json();
+      answer=data.choices?.[0]?.message?.content||"Error: "+(data.error?.message||"Unknown error");
+    }
+    const latency=Date.now()-t0;
+    removeTypingIndicator();
+    animatePipeline(false);
+    await addBotMessage(answer,latency,outOfScope?[]:sources,outOfScope,text);
+  } catch(e) {
+    removeTypingIndicator();
+    animatePipeline(false);
+    await addBotMessage("Error connecting to the AI backend: "+e.message,0,[],false,text);
+  }
+  btn.disabled=false; input.focus();
+}
+
+function clearChat() {
+  messages=[]; msgCount=0;
+  sessionId="RIQ-"+Math.random().toString(36).substr(2,8).toUpperCase();
+  document.getElementById("session-badge").textContent=sessionId;
+  document.getElementById("nav-session").textContent=sessionId;
+  updateCounter();
+  document.getElementById("chat-area").innerHTML=`<div class="welcome" id="welcome"><div class="w-icon">🧠</div><div class="w-title">RetainIQ Assistant</div><div class="w-desc">Your AI intelligence layer built on ChurnSense.<br>Ask about churn drivers, SHAP explanations, customer risk profiles, and retention strategies.</div><div class="topic-grid"><div class="topic-card"><div class="t-icon">📊</div><div class="t-title">EDA & Cohort Analysis</div><div class="t-desc">Churn rates by segment, tenure cohorts</div></div><div class="topic-card"><div class="t-icon">🔍</div><div class="t-title">SHAP Explainability</div><div class="t-desc">Feature importance, prediction explanations</div></div><div class="topic-card"><div class="t-icon">🎯</div><div class="t-title">Retention Playbook</div><div class="t-desc">Risk-tiered actions, scripts, offers</div></div><div class="topic-card"><div class="t-icon">💰</div><div class="t-title">Business Impact</div><div class="t-desc">ROI, payback period, revenue protection</div></div></div></div>`;
+}
+
+function exportChat() {
+  if(!messages.length) return;
+  let txt=`RetainIQ Session: ${sessionId}\nExported: ${new Date().toLocaleString()}\n${"=".repeat(50)}\n\n`;
+  messages.forEach(m=>{ txt+=`[${m.role==="user"?"Agent":"RetainIQ"}] ${m.ts}\n${m.content}\n\n`; });
+  const a=document.createElement("a");
+  a.href="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
+  a.download=`retainiq_${sessionId}.txt`; a.click();
+}
+
+const input=document.getElementById("msg-input");
+input.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();} });
+input.addEventListener("input",function(){ this.style.height="auto"; this.style.height=Math.min(this.scrollHeight,120)+"px"; });
+document.getElementById("ri-input").addEventListener("keydown",e=>{ if(e.key==="Enter")interpretRisk(); });
+updateCounter();
+document.getElementById("m-chunks").textContent = PASSAGES.length;
+document.getElementById("m-topk").textContent = "Top-" + TOP_K;
+function refreshMode(){
+  const live=!!(document.getElementById("api-key").value||"").trim();
+  document.getElementById("mode-pill").classList.toggle("demo",!live);
+  document.getElementById("mode-text").textContent = live ? "Live" : "Demo mode";
+}
+(() => {
+  const k=document.getElementById("api-key");
+  try { k.value = sessionStorage.getItem("riq_key")||""; } catch(e) {}
+  k.addEventListener("input",()=>{ try { sessionStorage.setItem("riq_key",k.value.trim()); } catch(e) {} refreshMode(); });
+  refreshMode();
+})();
+</script>
+</body>
+</html>
