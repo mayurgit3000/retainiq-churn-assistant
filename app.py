@@ -6,6 +6,12 @@ Enterprise-grade retention intelligence chatbot.
 import html
 import os
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # reads OPENROUTER_API_KEY from a local .env file if there is one
+except ImportError:
+    pass
+
 import streamlit as st
 import time
 import datetime

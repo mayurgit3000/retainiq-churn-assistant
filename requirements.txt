@@ -1,0 +1,8 @@
+langchain==0.3.25
+langchain-community==0.3.24
+langchain-huggingface==0.1.2
+faiss-cpu==1.13.0
+sentence-transformers==3.4.1
+streamlit==1.45.1
+requests==2.32.3
+python-dotenv==1.1.0

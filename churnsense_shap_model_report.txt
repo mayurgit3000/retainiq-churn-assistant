@@ -1,0 +1,147 @@
+DOCUMENT: ChurnSense — SHAP Explainability & Model Performance Report
+SOURCE: ChurnSense Model Evaluation, EU Business School BARBM222
+MODEL: Logistic Regression Pipeline with StandardScaler
+
+---
+
+MODEL SELECTION SUMMARY
+
+Three models were trained and compared on the same dataset and evaluation set. Missed churners are counted on the held-out test set.
+
+| Model               | AUC-ROC | Recall | Precision | F1    | Missed Churners (test set) |
+|---------------------|---------|--------|-----------|-------|-----------------|
+| Logistic Regression | 0.900   | 0.940  | 0.520     | 0.670 | 235             |
+| XGBoost             | 0.892   | 0.852  | 0.585     | 0.694 | 308             |
+| Random Forest       | 0.895   | 0.621  | 0.698     | 0.658 | 788             |
+
+SELECTED MODEL: Logistic Regression
+
+Reasons for selection:
+1. Highest recall (0.940) — catches 94% of actual churners, the business priority
+2. Fewest missed churners on the test set (235 vs 788 for Random Forest) — directly translates to retained revenue
+3. Fully interpretable coefficients — can explain every prediction to a non-technical stakeholder
+4. Lower computational cost — suitable for real-time scoring in a production API
+5. Consistent with SHAP explainability requirements
+
+Decision threshold was tuned from default 0.50 to 0.35 to maximise recall at the cost of some precision. This is appropriate for a retention use case where false negatives (missing a churner) are far more costly than false positives (offering retention to a non-churner).
+
+---
+
+MODEL PERFORMANCE METRICS
+
+Final model (Logistic Regression, threshold = 0.35):
+- AUC-ROC: 0.900 — excellent discriminative ability
+- Recall: 0.940 — catches 94 out of every 100 actual churners
+- Precision: 0.520 — 52% of flagged customers are genuine churners
+- F1 Score: 0.670 — harmonic mean of precision and recall
+- Decision Threshold: 0.35 (optimised for recall)
+
+Confusion matrix interpretation at threshold 0.35:
+- True Positives: customers correctly identified as churners — the primary target
+- False Negatives: churners missed by the model — minimised by lowering threshold
+- False Positives: non-churners flagged as at-risk — acceptable cost in retention context
+- True Negatives: non-churners correctly identified as safe
+
+AUC-ROC of 0.900 means the model has a 90% probability of correctly ranking a churner above a non-churner — strong performance for a binary classification task on real-world data.
+
+---
+
+SHAP ANALYSIS — GLOBAL FEATURE IMPORTANCE
+
+SHAP (SHapley Additive exPlanations) was used to explain model predictions at both global and individual level. SHAP values measure each feature's contribution to the prediction relative to the base rate.
+
+TOP 6 FEATURES BY MEAN ABSOLUTE SHAP VALUE:
+
+Rank 1 — Contract Type Encoded
+- Mean |SHAP|: 2.09
+- Direction: Month-to-Month contracts push churn probability strongly upward
+- Insight: Contract type is by far the most important predictor. A Month-to-Month customer has a SHAP contribution of approximately +2.09 to the log-odds of churning compared to an annual customer.
+- Business implication: Converting a customer from Month-to-Month to Annual is the single most impactful retention action available.
+
+Rank 2 — Customer Tenure Months
+- Mean |SHAP|: 0.99
+- Direction: Short tenure pushes churn probability upward; long tenure pushes it downward
+- Insight: Every additional month of tenure reduces churn risk. Customers in their first 6 months have tenure SHAP values that can exceed +1.5.
+- Business implication: The first 6 months are the critical retention window. Early onboarding investment has the highest ROI.
+
+Rank 3 — Satisfaction Score
+- Mean |SHAP|: 0.41
+- Direction: Low satisfaction scores push churn probability upward
+- Insight: Moderate predictive power. Signal is weaker than expected, likely due to data quality issues (high missing rate, imputation may have diluted signal).
+- Business implication: Satisfaction scores should be collected more systematically to improve this feature's signal in model v2.
+
+Rank 4 — Number of Support Calls (Last 6 Months)
+- Mean |SHAP|: 0.33
+- Direction: More support calls push churn probability upward
+- Insight: 3 or more support calls in 6 months is a strong churn signal. Each additional call beyond 3 increases churn probability meaningfully.
+- Business implication: Customers with 3+ support calls should be automatically escalated to the retention team for proactive outreach.
+
+Rank 5 — Return Rate
+- Mean |SHAP|: 0.18
+- Direction: High return rates push churn probability upward
+- Insight: Frequent returns indicate product dissatisfaction or mismatched expectations — a form of friction that precedes churn.
+- Business implication: High-return customers should receive product education or be offered alternative products to reduce friction.
+
+Rank 6 — NPS Score
+- Mean |SHAP|: 0.16
+- Direction: Low NPS pushes churn probability upward
+- Insight: NPS is a weaker signal than support calls despite its reputation as a churn predictor. May improve with better data collection.
+- Business implication: Monitor NPS trends but do not use it as the sole trigger for retention outreach.
+
+LOW-IMPORTANCE FEATURES (near-zero SHAP):
+- Gender: SHAP value < 0.01 — no predictive power, flagged for removal in v2
+- Region (North/South/East/West): SHAP value < 0.01 — no predictive power, flagged for removal in v2
+- Payment method: SHAP value < 0.05 — minimal predictive power
+
+---
+
+INDIVIDUAL PREDICTION EXPLANATION
+
+The ChurnSense API returns a waterfall-style explanation for every individual prediction. Example output for a high-risk customer:
+
+Customer profile:
+- Contract: Month-to-Month
+- Tenure: 3 months
+- Support calls (6m): 5
+- Satisfaction score: 2.5/10
+- NPS: 4/10
+- Return rate: 12%
+
+Prediction output:
+- Churn probability: 87%
+- Risk label: High Risk
+- Top risk factors:
+  1. contract_type_encoded: SHAP +1.73 (Month-to-Month contract)
+  2. customer_tenure_months: SHAP +1.04 (very short tenure, 3 months)
+  3. num_support_calls_last_6m: SHAP +0.62 (5 calls — high frustration signal)
+  4. satisfaction_score: SHAP +0.38 (low satisfaction at 2.5)
+
+Interpretation: "This customer is at 87% churn risk. The primary driver is their Month-to-Month contract combined with very short tenure (3 months). Five support calls in 6 months indicate active frustration. Recommended action: contact within 48 hours, offer Annual contract upgrade incentive."
+
+---
+
+SHAP DEPENDENCE PLOTS — KEY RELATIONSHIPS
+
+Contract Type vs Tenure interaction:
+- New Month-to-Month customers (under 6 months) have the highest combined SHAP values
+- The interaction between contract type and tenure is the most powerful churn signal in the model
+- Annual contract customers show negative SHAP values regardless of tenure — they are stable
+
+Support Calls dependence:
+- SHAP values for support calls increase non-linearly
+- 1–2 calls: modest increase in churn risk
+- 3 calls: significant jump in churn risk
+- 5+ calls: near-maximum contribution to churn probability
+- Threshold of 3 calls is the operational trigger point for retention escalation
+
+---
+
+FEATURE CORRELATION WITH CHURN (EDA confirmation)
+
+- contract_type → churn: strong positive correlation (Month-to-Month = high churn)
+- customer_tenure_months → churn: strong negative correlation (longer = lower churn)
+- num_support_calls_last_6m → churn: moderate positive correlation
+- satisfaction_score → churn: moderate negative correlation (lower score = higher churn)
+- monthly_spend → churn: near-zero correlation (spend does not predict churn)
+- region → churn: near-zero correlation (geography does not predict churn)
+- gender → churn: near-zero correlation (gender does not predict churn)

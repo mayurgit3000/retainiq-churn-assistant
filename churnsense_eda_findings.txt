@@ -1,0 +1,112 @@
+DOCUMENT: ChurnSense — Exploratory Data Analysis & Cohort Findings
+SOURCE: ChurnSense Internal Analysis Report, EU Business School BARBM222
+DATASET: P5_customer_churn.csv — 50,000 telecom customers, 22 features
+
+---
+
+BUSINESS PROBLEM
+
+Every month, thousands of telecom customers quietly decide to leave — and most companies don't know until it's too late. The retention team had no way to identify who was about to leave until they already had. They were reacting, not preventing.
+
+Key business metrics at the start of the project:
+- Annual churn rate: 26%
+- Customers lost per year: approximately 13,000
+- Average monthly spend: €35 per customer
+- Annual revenue at risk: €5.46 million
+
+---
+
+DATASET OVERVIEW
+
+The ChurnSense model was trained on a dataset of 50,000 telecom customers with 22 features covering contract details, usage behaviour, support interactions, and demographic data. Key preprocessing steps included:
+
+- Domain-logic imputation: days_since_last_purchase set to 999 for inactive customers
+- Group-based median imputation: monthly_spend imputed by contract type and plan
+- Indicator columns created for satisfaction_score and nps_score where data was missing
+- Log transformations applied to monthly_spend and return_rate to reduce skew
+- Ordinal encoding of contract_type (Month-to-Month = highest risk)
+
+---
+
+KEY EDA FINDINGS
+
+FINDING 1: CONTRACT TYPE IS THE DOMINANT CHURN DRIVER
+- Month-to-Month customers churn at 45.2%
+- Annual contract customers churn at 2.4%
+- Two-year contract customers churn at less than 1%
+- This is a 19x difference between Month-to-Month and annual contracts
+- Confirmed by SHAP analysis: contract type has the highest mean absolute SHAP value (2.09)
+- All three models (Logistic Regression, XGBoost, Random Forest) agree on contract type as the #1 driver — high-confidence finding
+
+FINDING 2: EARLY TENURE IS THE HIGHEST-RISK WINDOW
+- 41% churn rate in the first 6 months of tenure
+- Churn rate drops to approximately 15% between 6–12 months
+- Churn rate drops to approximately 8% between 1–2 years
+- Churn rate drops to approximately 5% between 2–5 years
+- Churn rate drops to approximately 3% after 5 years
+- The first 6 months are critical: customers who survive past 6 months are significantly more likely to stay long-term
+
+- Implication: onboarding and early engagement interventions have the highest ROI
+
+FINDING 3: SUPPORT CALLS ARE A STRONG CHURN SIGNAL
+- Customers who made 3 or more support calls in the last 6 months show significantly elevated churn rates
+- Support call frequency is a leading indicator of frustration and exit intent
+- The frustration_index feature (derived from support call rate) is among the top 4 SHAP features
+- Implication: customers with 3+ support calls should be flagged for proactive outreach immediately
+
+FINDING 4: SPEND AND REGION ARE NOT PREDICTIVE
+- Churn rate is approximately flat at 26% across all spend tiers: Low, Mid, High, and Premium
+- Churn rate is approximately flat at 26% across all regions: North, South, East, West
+- This is a counterintuitive but high-confidence finding — customers do not churn because of how much they spend
+- Implication: do not segment retention campaigns by spend tier or geography — focus on contract type and tenure instead
+
+FINDING 5: SATISFACTION SCORE IS A WEAK SIGNAL
+- Satisfaction score has lower predictive power than expected given its intuitive appeal
+- SHAP value of 0.41 — moderate but not as strong as contract type or tenure
+- Likely cause: data quality issues — high missing rate in satisfaction_score, imputation may have reduced signal
+- Flagged for investigation in model version 2
+- NPS score shows similar weakness (SHAP value 0.16)
+
+---
+
+COHORT ANALYSIS
+
+TENURE COHORT BREAKDOWN:
+- Under 6 months: 41% churn rate — CRITICAL risk segment
+- 6–12 months: approximately 15% churn rate — HIGH risk
+- 1–2 years: approximately 8% churn rate — MODERATE risk
+- 2–5 years: approximately 5% churn rate — LOW risk
+- 5+ years: approximately 3% churn rate — VERY LOW risk
+
+SPEND TIER BREAKDOWN (churn rate approximately equal across all):
+- Low spend (under €20/month): ~26% churn
+- Mid spend (€20–€40/month): ~26% churn
+- High spend (€40–€70/month): ~25% churn
+- Premium spend (over €70/month): ~26% churn
+- Conclusion: spend level has no meaningful impact on churn probability
+
+CONTRACT TYPE COHORT (most important segmentation):
+- Month-to-Month: 45.2% annual churn — primary target for retention campaigns
+- Annual contract: 2.4% annual churn — largely stable, monitor for satisfaction drops
+- Two-year contract: less than 1% annual churn — very stable segment
+
+---
+
+FEATURE ENGINEERING DECISIONS
+
+The following engineered features were created during EDA and proved important:
+
+1. tenure_risk_score: non-linear transformation of raw tenure months, amplifying risk in early tenure window
+2. new_mtm_flag: binary flag for customers who are both new (under 6 months) AND on Month-to-Month contract — the highest-risk combination
+3. support_call_rate: support calls normalised by tenure length, capturing relative frustration intensity
+4. frustration_index: composite score combining support_call_rate and return_rate
+5. log_monthly_spend: log transformation of monthly spend to reduce right skew
+6. log_return_rate: log transformation of return rate
+
+---
+
+DATA QUALITY NOTES
+
+- satisfaction_score and nps_score have significant missing rates — indicator columns were added
+- gender and region features show near-zero SHAP values — flagged for removal in model v2 to reduce noise and address fairness concerns
+- days_since_last_purchase required domain-logic imputation for inactive customers

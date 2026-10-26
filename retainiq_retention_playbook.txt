@@ -1,0 +1,185 @@
+DOCUMENT: RetainIQ — Retention Playbook & Business Recommendations
+SOURCE: RetainIQ Strategic Intelligence Report, powered by ChurnSense
+COMPANY: RetainIQ — AI-Powered Customer Retention Platform
+
+---
+
+COMPANY OVERVIEW
+
+RetainIQ is an AI-powered customer retention platform that combines predictive churn scoring (ChurnSense) with a RAG-powered intelligence layer (this system) to give retention teams real-time, explainable, actionable insights. The platform serves telecom companies, subscription businesses, and any organisation facing customer churn risk.
+
+RetainIQ's two core products:
+1. ChurnSense — ML model that scores every customer's churn probability in real time with SHAP explainability
+2. RetainIQ Assistant — RAG-powered chatbot that answers strategic and operational questions using ChurnSense's own analysis
+
+---
+
+BUSINESS IMPACT & ROI
+
+Based on ChurnSense model performance on a 50,000-customer telecom dataset:
+
+- Churners correctly identified per year: 12,220 (94% recall on ~13,000 annual churners)
+- Assumed retention rate with targeted intervention: 25%
+- Customers saved per year: 3,055
+- Average monthly spend per customer: €35
+- Protected annual revenue: €1.28 million
+- Year 1 deployment cost (infrastructure + integration): €13,000
+- Payback period: less than 4 days
+
+Without ChurnSense: retention team acts on gut feel, no prioritisation, estimated 5–8% retention of at-risk customers.
+With ChurnSense: retention team focuses on the top 20% highest-risk customers, estimated 25% retention rate on that segment.
+
+---
+
+RETENTION PLAYBOOK — RISK-BASED INTERVENTION FRAMEWORK
+
+TIER 1 — CRITICAL RISK (Churn probability 70%+)
+Trigger: ChurnSense score ≥ 0.70
+Profile: Month-to-Month contract + tenure under 6 months + 3+ support calls
+Action: Immediate personal outreach within 48 hours
+Channel: Direct phone call from senior retention agent
+Offer: Annual contract upgrade with 2-month discount (approximately €70 value)
+Script focus: Acknowledge support call history, offer dedicated account manager, present annual plan savings
+Target: 30–35% retention rate on this segment
+Expected monthly volume: approximately 800–1,200 customers
+
+TIER 2 — HIGH RISK (Churn probability 40–70%)
+Trigger: ChurnSense score 0.40–0.70
+Profile: Month-to-Month contract OR short tenure (6–12 months) with 1–2 support calls
+Action: Targeted digital outreach within 5 business days
+Channel: Email + in-app notification
+Offer: Loyalty reward (e.g., one month at 50% price) or feature upgrade
+Script focus: Highlight unused features, reinforce value proposition, introduce annual plan
+Target: 20–25% retention rate on this segment
+Expected monthly volume: approximately 2,000–3,000 customers
+
+TIER 3 — MODERATE RISK (Churn probability 20–40%)
+Trigger: ChurnSense score 0.20–0.40
+Profile: Annual contract approaching renewal OR moderate support call history
+Action: Proactive engagement campaign
+Channel: Email newsletter, SMS, push notification
+Offer: Early renewal discount, referral programme invitation
+Script focus: Product education, satisfaction survey, upcoming feature announcements
+Target: 40–50% retention rate (lower intervention intensity, higher baseline retention)
+Expected monthly volume: approximately 4,000–6,000 customers
+
+TIER 4 — LOW RISK (Churn probability below 20%)
+Trigger: ChurnSense score < 0.20
+Profile: Long-tenure annual contract customers, high engagement
+Action: Standard engagement and upsell
+Channel: Regular newsletter, loyalty programme
+Offer: Upsell to premium tier, referral bonus
+Target: Standard retention — these customers are largely self-sustaining
+
+---
+
+HIGH-PRIORITY RETENTION ACTIONS (RANKED BY ROI)
+
+ACTION 1: Convert Month-to-Month customers to Annual contracts
+- Impact: Reduces churn risk by up to 19x (from 45.2% to 2.4%)
+- Target: All Month-to-Month customers, prioritise those with tenure under 12 months
+- Offer: 1–2 months free on annual plan, or 15–20% annual discount
+- Expected conversion rate: 15–25% of targeted customers
+- This single action is the highest-ROI retention initiative available
+
+ACTION 2: Intensive onboarding programme for new customers (first 90 days)
+- Impact: Addresses the 41% churn rate in first 6 months
+- Activities: Welcome call at day 3, feature walkthrough at day 14, check-in call at day 45, satisfaction survey at day 60
+- Target: ALL new customers, with extra touchpoints for Month-to-Month contracts
+- Expected outcome: Reduce early churn rate from 41% to approximately 28–32%
+
+ACTION 3: Support call escalation protocol
+- Trigger: Customer reaches 3rd support call in 6-month window
+- Action: Automatic escalation to senior retention agent; next contact is proactive (agent calls customer, not vice versa)
+- Script: Acknowledge frustration, offer dedicated support contact, present retention offer
+- Expected outcome: 35–40% reduction in churn among the 3+ calls segment
+
+ACTION 4: Proactive contract renewal campaign (60 days before expiry)
+- Target: Annual contract customers approaching renewal
+- Channel: Email + phone
+- Offer: Early renewal discount (10–15%) plus loyalty recognition
+- Expected outcome: 85–90% renewal rate on targeted segment (vs ~70% without intervention)
+
+---
+
+CUSTOMER RISK PROFILES — QUICK REFERENCE
+
+PROFILE A: "The Early Leaver" — HIGHEST RISK
+- Tenure: Under 6 months
+- Contract: Month-to-Month
+- Support calls: 2+
+- ChurnSense score: typically 75–90%
+- Recommended action: Tier 1 intervention, personal call within 48 hours
+- Key message: "We noticed you've had some questions — let us make this right"
+
+PROFILE B: "The Frustrated Long-Timer"
+- Tenure: 12–36 months
+- Contract: Month-to-Month (never upgraded)
+- Support calls: 3+
+- ChurnSense score: typically 55–75%
+- Recommended action: Tier 2 intervention, loyalty recognition + annual plan offer
+- Key message: "You've been with us for [X] months — here's what we'd like to offer you as a valued customer"
+
+PROFILE C: "The Dissatisfied New Annual"
+- Tenure: Under 12 months
+- Contract: Annual
+- Satisfaction score: Low (under 5/10)
+- Support calls: 2+
+- ChurnSense score: typically 40–60%
+- Recommended action: Tier 2 intervention, satisfaction recovery call
+- Key message: "We want to make sure you're getting full value from your plan"
+
+PROFILE D: "The Stable Long-Timer" — LOWEST RISK
+- Tenure: 3+ years
+- Contract: Annual or Two-Year
+- Support calls: 0–1
+- ChurnSense score: typically under 15%
+- Recommended action: Tier 4, upsell opportunity
+- Key message: Loyalty recognition, referral programme
+
+---
+
+ETHICAL GUIDELINES FOR RETENTION AI
+
+The following guidelines govern the use of ChurnSense scores in retention operations:
+
+1. HUMAN REVIEW REQUIRED: No adverse decision (e.g., withholding service, denying upgrade) may be made based solely on ChurnSense score without human agent review. Compliant with GDPR Article 22 (right not to be subject to automated decision-making).
+
+2. TRANSPARENCY: Customers have the right to know that AI-assisted scoring is used in retention processes. RetainIQ recommends disclosing this in privacy policies.
+
+3. BIAS MONITORING: Gender and region features have been confirmed as near-zero SHAP contributors and are flagged for removal in ChurnSense v2. Regular bias audits should be conducted quarterly.
+
+4. EU AI ACT CLASSIFICATION: ChurnSense is classified as a limited-risk AI system under the EU AI Act. Transparency obligations apply — customers should be informed when interacting with AI-assisted processes.
+
+5. DATA MINIMISATION: Only features with confirmed predictive value should be used in production scoring. Gender and region will be removed in v2 to reduce data collection scope and address fairness concerns.
+
+6. EXPLAINABILITY: Every ChurnSense prediction comes with SHAP-based explanations accessible to retention agents. No "black box" decisions — every score can be explained in plain English.
+
+---
+
+TECHNOLOGY STACK
+
+ChurnSense (Task 1 — AI Product):
+- Model: Logistic Regression with StandardScaler pipeline
+- Training data: 50,000 telecom customers, 22 features
+- API: FastAPI /predict endpoint, returns probability + SHAP values
+- Frontend: Streamlit interface for retention agents
+
+RetainIQ Assistant (Task 2 — RAG System):
+- Document ingestion: LangChain RecursiveCharacterTextSplitter (500 chars, 100 overlap)
+- Embeddings: sentence-transformers/all-MiniLM-L6-v2 (384-dimensional vectors)
+- Vector database: FAISS (local, CPU-based)
+- LLM backend: Claude 3 Haiku via OpenRouter
+- Frontend: Streamlit chat interface with source citations
+- Out-of-scope handling: L2 distance threshold prevents hallucination on unknown queries
+
+---
+
+COMPETITIVE POSITIONING
+
+RetainIQ differentiates from generic CRM retention tools through:
+1. Model-native explanations: SHAP values directly integrated into agent workflow — not just a score but a reason
+2. RAG intelligence layer: Agents can ask natural language questions about churn patterns, model findings, and recommended actions
+3. Recall-optimised model: 94% recall ensures near-complete identification of at-risk customers — competitors typically optimise for F1 which sacrifices recall
+
+4. Rapid deployment: < 4-day payback period makes the business case straightforward for any telecom of meaningful scale

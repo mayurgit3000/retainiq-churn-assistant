@@ -330,14 +330,14 @@ KEY FINDINGS:
 COHORT: Under 6 months: 41% churn CRITICAL. 6-12 months: 15% HIGH. 1-2 years: 8% MODERATE. 2-5 years: 5% LOW. 5+ years: 3% VERY LOW.
 
 DOCUMENT 2: ChurnSense SHAP & Model Performance
-MODEL SELECTED: Logistic Regression — AUC 0.900, Recall 0.940, Precision 0.520, F1 0.670, Missed Churners: 235.
-XGBoost: AUC 0.892, Recall 0.852, Missed: 308. Random Forest: AUC 0.895, Recall 0.621, Missed: 788.
-WHY LOGISTIC REGRESSION: Highest recall 94%, fewest missed churners 235, fully interpretable, lower compute. Threshold tuned from 0.50 to 0.35.
+MODEL SELECTED: Logistic Regression — AUC 0.900, Recall 0.940, Precision 0.520, F1 0.670, Missed Churners (test set): 235.
+XGBoost: AUC 0.892, Recall 0.852, Missed (test set): 308. Random Forest: AUC 0.895, Recall 0.621, Missed (test set): 788.
+WHY LOGISTIC REGRESSION: Highest recall 94%, fewest missed churners on the test set (235), fully interpretable, lower compute. Threshold tuned from 0.50 to 0.35.
 SHAP FEATURES: 1) Contract Type SHAP 2.09 — Month-to-Month massive risk. 2) Customer Tenure SHAP 0.99 — short tenure high risk. 3) Satisfaction Score SHAP 0.41. 4) Support Calls SHAP 0.33 — 3+ calls trigger. 5) Return Rate SHAP 0.18. 6) NPS Score SHAP 0.16. 7) Gender SHAP <0.01 removing. 8) Region SHAP <0.01 removing.
 EXAMPLE: 87% churn — Month-to-Month, 3 months tenure, 5 support calls, satisfaction 2.5/10. SHAP: contract +1.73, tenure +1.04, support +0.62, satisfaction +0.38.
 
 DOCUMENT 3: RetainIQ Retention Playbook
-BUSINESS IMPACT: 12,220 churners identified/year, 3,055 customers saved, €1.28M protected revenue, €13,000 deployment cost, payback <4 days, 3-year ROI ~2,850%.
+BUSINESS IMPACT: 12,220 churners identified/year, 3,055 customers saved, €1.28M protected revenue, €13,000 deployment cost, payback <4 days.
 TIER 1 CRITICAL (score ≥0.70): Month-to-Month + tenure <6m + 3+ calls. Phone call within 48h. Annual contract offer with 2-month discount. 30-35% retention rate.
 TIER 2 HIGH (0.40-0.70): Month-to-Month OR short tenure. Email+app within 5 days. Loyalty reward or feature upgrade. 20-25% retention.
 TIER 3 MODERATE (0.20-0.40): Engagement campaign. Early renewal discount. 40-50% retention.

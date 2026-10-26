@@ -2,7 +2,7 @@
 
 A retrieval-augmented (RAG) assistant for a telecom company's retention team, built on top of **ChurnSense**, a churn prediction model trained on 50,000 customers. Agents ask questions in plain English and get answers grounded in the model's own findings, with the sources cited.
 
-![RetainIQ web demo](screenshots/web-demo.png)
+![RetainIQ web demo](web-demo.png)
 
 ## The pipeline
 
@@ -23,13 +23,15 @@ Customer data (50K records, 22 features) → **ChurnSense** model → **SHAP** e
 
 ## Two versions
 
-| | `app.py` (Streamlit) | `web-demo/index.html` |
+| | `app.py` (Streamlit) | `index.html` (web demo) |
 |---|---|---|
 | Retrieval | FAISS vector search with `all-MiniLM-L6-v2` embeddings | Keyword retrieval over the same knowledge base |
 | Runs | Locally, with Python | In any browser, no install |
 | Without an API key | Shows a setup message | Demo mode: shows the retrieved passages |
 
 ### Run the Streamlit app
+
+The three knowledge-base documents are the `.txt` files at the top level of the repo. `ingest.py` splits them into 63 chunks of up to 500 characters, embeds them and saves a FAISS index to `vectorstore/` (not committed, because it is rebuilt from the documents).
 
 ```bash
 pip install -r requirements.txt
@@ -42,7 +44,7 @@ You can also put the key in `.streamlit/secrets.toml` (see `secrets.toml.example
 
 ### Run the web demo
 
-Open `web-demo/index.html`. Paste an [OpenRouter](https://openrouter.ai) key in the header for written answers, or leave it empty to see the retrieval step on its own.
+Open `index.html`, or use the live demo link above. Paste an [OpenRouter](https://openrouter.ai) key in the header for written answers, or leave it empty to see the retrieval step on its own.
 
 ## Built with
 
@@ -52,3 +54,4 @@ Python · Streamlit · FAISS · sentence-transformers (all-MiniLM-L6-v2) · Clau
 
 GDPR Article 22: the model flags customers but never makes an adverse decision without human review. Gender and region carry near-zero SHAP weight and are being removed in v2.
 
+*Built for BARBM222 at EU Business School.*
