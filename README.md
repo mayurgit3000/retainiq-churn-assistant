@@ -52,4 +52,3 @@ Python · Streamlit · FAISS · sentence-transformers (all-MiniLM-L6-v2) · Clau
 
 GDPR Article 22: the model flags customers but never makes an adverse decision without human review. Gender and region carry near-zero SHAP weight and are being removed in v2.
 
-*Built for BARBM222 at EU Business School.*
